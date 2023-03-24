@@ -21,3 +21,14 @@ jobs:
       run: cd build && make
     - name: Run Test
       run: /home/runner/work/hw1/hw1/build/tests/ctest
+
+  cppcheck:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v3 
+      - name: Install cppcheck
+        run: |
+          sudo apt-get update -y           
+          sudo apt-get install -y cppcheck
+      - name: Run cppcheck
+        run: cppcheck --enable=all --suppress=missingInclude --std=c++17 ./src ./tests
