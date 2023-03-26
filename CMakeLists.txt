@@ -2,15 +2,16 @@ cmake_minimum_required(VERSION 3.0.0)
 set(ProjectName hw1)
 project(${ProjectName})
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
-option(EnableTesting ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+set(EnableTesting ON)
 
 if(${EnableTesting})
     add_subdirectory(tests)
 endif()
 
-add_subdirectory(tests)
 add_subdirectory(lib/utils)
 
 set(SOURCES src/main.cpp)
