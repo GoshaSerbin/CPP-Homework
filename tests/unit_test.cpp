@@ -1,3 +1,4 @@
+// Copyright 2023 Gosha Serbin
 #include <gtest/gtest.h>
 #include "utils.hpp"
 
