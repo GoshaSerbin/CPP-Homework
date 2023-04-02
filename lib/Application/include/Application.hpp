@@ -7,7 +7,7 @@
 
 class Application {
  public:
-    int run(int argc, char **argv);
+    void run(int argc, char **argv);
 
  private:
     int readArgs(int argc, char **argv, std::string *const fileNameArtist,

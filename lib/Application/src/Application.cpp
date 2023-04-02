@@ -2,18 +2,18 @@
 #include "Application.hpp"
 #include <span>
 
-int Application::run(int argc, char **argv) {
+void Application::run(int argc, char **argv) {
     std::string fileNameArtist {};
     std::string fileNameGender {};
     std::string artistName {};
     if (!readArgs(argc, argv, &fileNameArtist, &fileNameGender, &artistName)) {
-        return 0;
+        return;
     }
 
     std::ifstream fileGender(fileNameGender);
     if (!fileGender.is_open()) {
         std::cout << "Can not open gender file!" << std::endl;
-        return 0;
+        return;
     }
     std::unordered_map<size_t, std::string> genderByID;
     fillMapGenderByID(fileGender, &genderByID);
@@ -21,11 +21,10 @@ int Application::run(int argc, char **argv) {
     std::ifstream fileArtist(fileNameArtist);
     if (!fileArtist.is_open()) {
         std::cout << "Can not open artist file!" << std::endl;
-        return 0;
+        return;
     }
     findArtists(fileArtist, artistName, genderByID, std::cout);
     fileArtist.close();
-    return 0;
 }
 
 // Если данные необходимые для работы программы не получены - возвращает 0
