@@ -1,9 +1,9 @@
 #pragma once
 
-#include <iostream>
 #include <fstream>
-#include <unordered_map>
+#include <iostream>
 #include <string>
+#include <unordered_map>
 
 class Application {
  public:
