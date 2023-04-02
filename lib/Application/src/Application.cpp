@@ -3,7 +3,9 @@
 #include <span>
 
 int Application::run(int argc, char **argv) {
-    std::string fileNameArtist = "", fileNameGender = "", artistName = "";
+    std::string fileNameArtist {};
+    std::string fileNameGender {};
+    std::string artistName {};
     if (!readArgs(argc, argv, &fileNameArtist, &fileNameGender, &artistName)) {
         return 0;
     }
