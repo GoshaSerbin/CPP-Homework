@@ -62,34 +62,42 @@ int Application::readArgs(int argc, char **argv,
 void Application::fillMapGenderByID(
     std::istream &data,
     std::unordered_map<size_t, std::string> *const genderByID) {
-    // Номера столбцов
-    const size_t IDPosition = 0;
-    const size_t namePosition = 1;
-
     std::string line;
     while (getline(data, line)) {
         size_t ID = 0;
         try {
-            ID = std::stoi(getField(IDPosition, line));
+            ID = std::stoi(getField(fieldPosition::GENDER_ID, line));
         } catch (std::invalid_argument const &ex) {
             std::cerr << "Gender file is not correct." << std::endl;
             throw;
         }
-        std::string name = getField(namePosition, line);
+        std::string name = getField(fieldPosition::GENDER_NAME, line);
         (*genderByID)[ID] = name;
     }
 }
+
+bool Application::AllFieldsAreEmpty(
+    const std::string &line,
+    const std::vector<fieldPosition> &requiredFieldPositions,
+    const std::string &emptySeq) {
+    for (auto position : requiredFieldPositions) {
+        if (getField(position, line) != emptySeq) {
+            return false;
+        }
+    }
+    return true;
+};
 
 // Выводит информацию про нужного артиста в out
 void Application::findArtists(
     std::istream &data, const std::string &artistName,
     const std::unordered_map<size_t, std::string> &genderByID,
     std::ostream &out) {
-    const size_t namePosition = 2;  // номер столбца имя исполнителя
     std::string line = "";
     size_t artistsCounter = 0;
+    out << "YEAR\t\tMONTH\t\tDAY\t\tGENDER" << std::endl;
     while (getline(data, line)) {
-        std::string currentName = getField(namePosition, line);
+        std::string currentName = getField(fieldPosition::NAME, line);
         if (currentName == artistName) {
             ++artistsCounter;
             printArtist(line, genderByID, std::cout);
@@ -99,7 +107,7 @@ void Application::findArtists(
 }
 
 // Возвращает поле столбца fieldPosition строки line
-std::string Application::getField(size_t fieldPosition,
+std::string Application::getField(fieldPosition fieldPosition,
                                   const std::string &line) {
     size_t currentPos = 0;
     // Доходим до столбца fieldPosition
@@ -116,38 +124,35 @@ void Application::printArtist(
     const std::string &line,
     const std::unordered_map<size_t, std::string> &genderByID,
     std::ostream &out) {
-    // Номера столбцов
-    const size_t yearPosition = 4;     // Год рождения
-    const size_t monthPosition = 5;    // Месяц рождения
-    const size_t dayPosition = 6;      // День рождения
-    const size_t genderPosition = 12;  // Пол исполнителя
-
     const std::string empty = "\\N";
+    const std::string sep = "\t\t";
 
-    std::string year = getField(yearPosition, line);
-    std::string month = getField(monthPosition, line);
-    std::string day = getField(dayPosition, line);
-    std::string gender = getField(genderPosition, line);
-    if (year == empty && month == empty && day == empty && gender == empty) {
+    std::vector<fieldPosition> requiredFieldPositions = {
+        fieldPosition::YEAR, fieldPosition::MONTH, fieldPosition::DAY,
+        fieldPosition::GENDER};
+    if (AllFieldsAreEmpty(line, requiredFieldPositions, empty)) {
         return;
     }
-    if (year != empty) {
-        out << "year: " + year << std::endl;
-    }
-    if (month != empty) {
-        out << "month: " + month << std::endl;
-    }
-    if (day != empty) {
-        out << "day: " + day << std::endl;
-    }
-    if (gender != empty) {
-        try {
-            size_t genderID = std::stoi(gender);
-            out << "gender: " + genderByID.at(genderID) << std::endl;
-        } catch (std::invalid_argument const &ex) {
-            std::cerr << "Gender file is not correct." << std::endl;
-            throw;
+    for (auto position : requiredFieldPositions) {
+        const std::string field = getField(position, line);
+        if (field == empty) {
+            out << "---" << sep;
+            continue;
+        };
+        switch (position) {
+            case fieldPosition::GENDER:
+                try {
+                    size_t genderID = std::stoi(field);
+                    out << genderByID.at(genderID) << sep;
+
+                } catch (std::invalid_argument const &ex) {
+                    std::cerr << "Gender file is not correct." << std::endl;
+                    throw;
+                }
+                break;
+            default:
+                out << field << sep;
         }
-    }
+    };
     out << std::endl;
 }
