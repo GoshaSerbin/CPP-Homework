@@ -1,5 +1,7 @@
 // Copyright 2023 Gosha Serbin
+
 #include "Application.hpp"
+
 #include <span>
 
 void Application::run(int argc, char **argv) {
@@ -27,7 +29,6 @@ void Application::run(int argc, char **argv) {
     fileArtist.close();
 }
 
-// Если данные необходимые для работы программы не получены - возвращает 0
 int Application::readArgs(int argc, char **argv,
                           std::string *const fileNameArtist,
                           std::string *const fileNameGender,
@@ -58,7 +59,6 @@ int Application::readArgs(int argc, char **argv,
     return 1;
 }
 
-// Заполняет контейнер genderByID
 void Application::fillMapGenderByID(
     std::istream &data,
     std::unordered_map<size_t, std::string> *const genderByID) {
@@ -88,7 +88,6 @@ bool Application::AllFieldsAreEmpty(
     return true;
 };
 
-// Выводит информацию про нужного артиста в out
 void Application::findArtists(
     std::istream &data, const std::string &artistName,
     const std::unordered_map<size_t, std::string> &genderByID,
@@ -106,11 +105,10 @@ void Application::findArtists(
     out << "Total found " << artistsCounter << " artists." << std::endl;
 }
 
-// Возвращает поле столбца fieldPosition строки line
 std::string Application::getField(fieldPosition fieldPosition,
                                   const std::string &line) {
     size_t currentPos = 0;
-    // Доходим до столбца fieldPosition
+
     for (size_t i = 0; i < fieldPosition; ++i) {
         currentPos = line.find('\t', currentPos) + 1;
         if (currentPos == 0) return "";
@@ -119,7 +117,6 @@ std::string Application::getField(fieldPosition fieldPosition,
     return line.substr(currentPos, fieldLength);
 }
 
-// Выводит данные об исполнителе в строке line
 void Application::printArtist(
     const std::string &line,
     const std::unordered_map<size_t, std::string> &genderByID,
