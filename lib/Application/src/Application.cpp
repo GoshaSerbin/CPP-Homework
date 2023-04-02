@@ -1,8 +1,8 @@
 // Copyright 2023 Gosha Serbin
-#include "utils.hpp"
+#include "Application.hpp"
 #include <span>
 
-int Utils::run(int argc, char **argv) {
+int Application::run(int argc, char **argv) {
     std::string fileNameArtist = "", fileNameGender = "", artistName = "";
     if (!readArgs(argc, argv, &fileNameArtist, &fileNameGender, &artistName)) {
         return 0;
@@ -27,9 +27,10 @@ int Utils::run(int argc, char **argv) {
 }
 
 // Если данные необходимые для работы программы не получены - возвращает 0
-int Utils::readArgs(int argc, char **argv, std::string *const fileNameArtist,
-                    std::string *const fileNameGender,
-                    std::string *const artistName) {
+int Application::readArgs(int argc, char **argv,
+                          std::string *const fileNameArtist,
+                          std::string *const fileNameGender,
+                          std::string *const artistName) {
     auto args = std::span(argv, static_cast<size_t>(argc));
     for (int i = 1; i < argc; ++i) {
         if (std::string_view(args[i]) == "--help") {
@@ -57,7 +58,7 @@ int Utils::readArgs(int argc, char **argv, std::string *const fileNameArtist,
 }
 
 // Заполняет контейнер genderByID
-void Utils::fillMapGenderByID(
+void Application::fillMapGenderByID(
     std::istream &data,
     std::unordered_map<size_t, std::string> *const genderByID) {
     // Номера столбцов
@@ -79,7 +80,7 @@ void Utils::fillMapGenderByID(
 }
 
 // Выводит информацию про нужного артиста в out
-void Utils::findArtists(
+void Application::findArtists(
     std::istream &data, const std::string &artistName,
     const std::unordered_map<size_t, std::string> &genderByID,
     std::ostream &out) {
@@ -97,7 +98,8 @@ void Utils::findArtists(
 }
 
 // Возвращает поле столбца fieldPosition строки line
-std::string Utils::getField(size_t fieldPosition, const std::string &line) {
+std::string Application::getField(size_t fieldPosition,
+                                  const std::string &line) {
     size_t currentPos = 0;
     // Доходим до столбца fieldPosition
     for (size_t i = 0; i < fieldPosition; ++i) {
@@ -109,7 +111,7 @@ std::string Utils::getField(size_t fieldPosition, const std::string &line) {
 }
 
 // Выводит данные об исполнителе в строке line
-void Utils::printArtist(
+void Application::printArtist(
     const std::string &line,
     const std::unordered_map<size_t, std::string> &genderByID,
     std::ostream &out) {

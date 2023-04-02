@@ -12,8 +12,8 @@ if(${EnableTesting})
     add_subdirectory(tests)
 endif()
 
-add_subdirectory(lib/utils)
+add_subdirectory(lib/Application)
 
 set(SOURCES src/main.cpp)
 add_executable(${ProjectName} ${SOURCES})
-target_link_libraries(${ProjectName} utils)
+target_link_libraries(${ProjectName} Application)

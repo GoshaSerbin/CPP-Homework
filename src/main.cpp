@@ -1,6 +1,7 @@
 // Copyright 2023 Gosha Serbin
-#include "utils.hpp"
+
+#include "Application.hpp"
 
 int main(int argc, char **argv) {
-    return Utils::run(argc, argv);
+    return Application::run(argc, argv);
 }

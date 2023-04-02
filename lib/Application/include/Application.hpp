@@ -1,11 +1,11 @@
-// Copyright 2023 Gosha Serbin
 #pragma once
+
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
 #include <string>
 
-class Utils {
+class Application {
  public:
     static int run(int argc, char **argv);
     static int readArgs(int argc, char **argv,

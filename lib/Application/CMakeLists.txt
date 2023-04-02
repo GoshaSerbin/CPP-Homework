@@ -1,0 +1,2 @@
+add_library(Application src/Application.cpp)
+target_include_directories(Application PUBLIC include)
