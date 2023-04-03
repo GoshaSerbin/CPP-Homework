@@ -6,6 +6,29 @@
 #include <unordered_map>
 #include <vector>
 
+class FileHandler {
+ public:
+    FileHandler(const std::string &fileName) {
+        m_file.open(fileName);
+        if (!m_file.is_open()) {
+            std::cerr << "Error: failed to open file with name " << fileName
+                      << std::endl;
+            throw std::runtime_error("Failed to open file");
+        }
+    }
+
+    ~FileHandler() {
+        if (m_file.is_open()) {
+            m_file.close();
+        }
+    }
+
+    void getLine(std::string &line) { std::getline(m_file, line); }
+
+ private:
+    std::ifstream m_file;
+};
+
 class Application {
  public:
     void run(int argc, char **argv);

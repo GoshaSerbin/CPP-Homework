@@ -105,11 +105,11 @@ void Application::findArtists(
     out << "Total found " << artistsCounter << " artists." << std::endl;
 }
 
-std::string Application::getField(fieldPosition fieldPosition,
+std::string Application::getField(fieldPosition position,
                                   const std::string &line) {
     size_t currentPos = 0;
 
-    for (size_t i = 0; i < fieldPosition; ++i) {
+    for (size_t i = 0; i < position; ++i) {
         currentPos = line.find('\t', currentPos) + 1;
         if (currentPos == 0) return "";
     }
