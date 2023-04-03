@@ -8,7 +8,8 @@ void Application::run(int argc, char **argv) {
     std::string fileNameArtist {};
     std::string fileNameGender {};
     std::string artistName {};
-    if (!readArgs(argc, argv, &fileNameArtist, &fileNameGender, &artistName)) {
+    if (readArgs(argc, argv, &fileNameArtist, &fileNameGender, &artistName) !=
+        returnValues::fileNamesReceived) {
         return;
     }
 
@@ -29,10 +30,10 @@ void Application::run(int argc, char **argv) {
     fileArtist.close();
 }
 
-int Application::readArgs(int argc, char **argv,
-                          std::string *const fileNameArtist,
-                          std::string *const fileNameGender,
-                          std::string *const artistName) {
+returnValues Application::readArgs(int argc, char **argv,
+                                   std::string *const fileNameArtist,
+                                   std::string *const fileNameGender,
+                                   std::string *const artistName) {
     auto args = std::span(argv, static_cast<size_t>(argc));
     for (int i = 1; i < argc; ++i) {
         if (std::string_view(args[i]) == "--help") {
@@ -40,7 +41,7 @@ int Application::readArgs(int argc, char **argv,
             std::cout << "--artist_file_path" << std::endl;
             std::cout << "--gender_file_path" << std::endl;
             std::cout << "--artist_name" << std::endl;
-            return 0;
+            return returnValues::fileNamesNotReceived;
         }
         std::string arg(args[i]);
         size_t pos = arg.find('=');
@@ -56,7 +57,7 @@ int Application::readArgs(int argc, char **argv,
             std::cout << "Unknown option ignored." << std::endl;
         }
     }
-    return 1;
+    return returnValues::fileNamesReceived;
 }
 
 void Application::fillMapGenderByID(
