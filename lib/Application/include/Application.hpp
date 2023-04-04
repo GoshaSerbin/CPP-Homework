@@ -8,7 +8,9 @@
 #include <unordered_map>
 #include <vector>
 
+namespace {
 enum class ReturnValues { fileNamesReceived, fileNamesNotReceived };
+}
 
 class Application {
  public:
@@ -29,12 +31,14 @@ class Application {
                                         std::filesystem::path& fileNameGender,
                                         std::filesystem::path& artistName, std::ostream& out);
     void fillMapGenderByID(std::istream& data, std::unordered_map<size_t, std::string>& genderByID);
-    void findArtists(std::istream& data, const std::string& artistName,
-                     const std::unordered_map<size_t, std::string>& genderByID, std::ostream& out);
     [[nodiscard]] bool AllFieldsAreEmpty(const std::string& line,
                                          const std::vector<fieldPosition>& requiredFieldPositions,
                                          const std::string& emptySeq);
     [[nodiscard]] std::string getField(fieldPosition position, const std::string& line);
-    void printArtist(const std::string& line, const std::unordered_map<size_t, std::string>& genderByID,
-                     std::ostream& out);
+    [[nodiscard]] std::vector<std::string> getSuitableArtistsInfo(std::istream& data,
+                                                                  const std::string& artistName);
+    void printArtistsInfo(const std::vector<std::string> artistsInfo,
+                          const std::unordered_map<size_t, std::string>& genderByID, std::ostream& out);
+    void printArtistInfo(const std::string& line, const std::unordered_map<size_t, std::string>& genderByID,
+                         std::ostream& out);
 };

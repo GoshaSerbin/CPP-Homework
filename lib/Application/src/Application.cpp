@@ -25,7 +25,9 @@ void Application::run(int argc, char** argv) {
         std::cout << "Can not open artist file!" << std::endl;
         return;
     }
-    findArtists(*fileArtistUPtr, artistName, genderByID, std::cout);
+    std::vector<std::string> artistsInfo(getSuitableArtistsInfo(*fileArtistUPtr, artistName));
+    std::cout << "Total found " << artistsInfo.size() << " artists.\n";
+    printArtistsInfo(artistsInfo, genderByID, std::cout);
 }
 
 ReturnValues Application::readArgs(int argc, char** argv, std::filesystem::path& fileNameArtist,
@@ -75,19 +77,27 @@ bool Application::AllFieldsAreEmpty(const std::string& line,
     return true;
 };
 
-void Application::findArtists(std::istream& data, const std::string& artistName,
-                              const std::unordered_map<size_t, std::string>& genderByID, std::ostream& out) {
-    std::string line = "";
-    size_t artistsCounter = 0;
-    out << "YEAR\t\tMONTH\t\tDAY\t\tGENDER" << std::endl;
+std::vector<std::string> Application::getSuitableArtistsInfo(std::istream& data,
+                                                             const std::string& artistName) {
+    std::vector<std::string> info;
+    std::string line {};
     while (getline(data, line)) {
         std::string currentName = getField(fieldPosition::NAME, line);
         if (currentName == artistName) {
-            ++artistsCounter;
-            printArtist(line, genderByID, std::cout);
+            info.push_back(line);
         }
     }
-    out << "Total found " << artistsCounter << " artists." << std::endl;
+    return info;
+}
+
+void Application::printArtistsInfo(const std::vector<std::string> artistsInfo,
+                                   const std::unordered_map<size_t, std::string>& genderByID,
+                                   std::ostream& out) {
+    std::string line {};
+    out << "YEAR\t\tMONTH\t\tDAY\t\tGENDER\n";
+    for (const auto& artistInfo : artistsInfo) {
+        printArtistInfo(artistInfo, genderByID, out);
+    }
 }
 
 std::string Application::getField(fieldPosition position, const std::string& line) {
@@ -101,10 +111,11 @@ std::string Application::getField(fieldPosition position, const std::string& lin
     return line.substr(currentPos, fieldLength);
 }
 
-void Application::printArtist(const std::string& line,
-                              const std::unordered_map<size_t, std::string>& genderByID, std::ostream& out) {
-    const std::string empty = "\\N";
-    const std::string sep = "\t\t";
+void Application::printArtistInfo(const std::string& line,
+                                  const std::unordered_map<size_t, std::string>& genderByID,
+                                  std::ostream& out) {
+    const std::string empty("\\N");
+    const std::string sep("\t\t");
 
     std::vector<fieldPosition> requiredFieldPositions = {fieldPosition::YEAR, fieldPosition::MONTH,
                                                          fieldPosition::DAY, fieldPosition::GENDER};
@@ -127,5 +138,5 @@ void Application::printArtist(const std::string& line,
                 out << field << sep;
         }
     };
-    out << std::endl;
+    out << '\n';
 }
