@@ -12,7 +12,7 @@ enum class ReturnValues { fileNamesReceived, fileNamesNotReceived };
 
 class Application {
  public:
-    void run(int argc, char **argv);
+    void run(int argc, char** argv);
 
  private:
     enum fieldPosition {
@@ -25,23 +25,16 @@ class Application {
         GENDER = 12
     };
 
-    [[nodiscard]] ReturnValues readArgs(int argc, char **argv,
-                                        std::filesystem::path &fileNameArtist,
-                                        std::filesystem::path &fileNameGender,
-                                        std::filesystem::path &artistName,
-                                        std::ostream &out);
-    void fillMapGenderByID(std::istream &data,
-                           std::unordered_map<size_t, std::string> &genderByID);
-    void findArtists(std::istream &data, const std::string &artistName,
-                     const std::unordered_map<size_t, std::string> &genderByID,
-                     std::ostream &out);
-    [[nodiscard]] bool AllFieldsAreEmpty(
-        const std::string &line,
-        const std::vector<fieldPosition> &requiredFieldPositions,
-        const std::string &emptySeq);
-    [[nodiscard]] std::string getField(fieldPosition position,
-                                       const std::string &line);
-    void printArtist(const std::string &line,
-                     const std::unordered_map<size_t, std::string> &genderByID,
-                     std::ostream &out);
+    [[nodiscard]] ReturnValues readArgs(int argc, char** argv, std::filesystem::path& fileNameArtist,
+                                        std::filesystem::path& fileNameGender,
+                                        std::filesystem::path& artistName, std::ostream& out);
+    void fillMapGenderByID(std::istream& data, std::unordered_map<size_t, std::string>& genderByID);
+    void findArtists(std::istream& data, const std::string& artistName,
+                     const std::unordered_map<size_t, std::string>& genderByID, std::ostream& out);
+    [[nodiscard]] bool AllFieldsAreEmpty(const std::string& line,
+                                         const std::vector<fieldPosition>& requiredFieldPositions,
+                                         const std::string& emptySeq);
+    [[nodiscard]] std::string getField(fieldPosition position, const std::string& line);
+    void printArtist(const std::string& line, const std::unordered_map<size_t, std::string>& genderByID,
+                     std::ostream& out);
 };

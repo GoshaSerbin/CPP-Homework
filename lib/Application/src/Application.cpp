@@ -4,16 +4,15 @@
 
 #include <span>
 
-void Application::run(int argc, char **argv) {
+void Application::run(int argc, char** argv) {
     std::filesystem::path fileNameArtist {};
     std::filesystem::path fileNameGender {};
     std::filesystem::path artistName {};
-    if (readArgs(argc, argv, fileNameArtist, fileNameGender, artistName,
-                 std::cout) != ReturnValues::fileNamesReceived) {
+    if (readArgs(argc, argv, fileNameArtist, fileNameGender, artistName, std::cout) !=
+        ReturnValues::fileNamesReceived) {
         return;
     }
-    std::unique_ptr<std::ifstream> fileGenderUPtr(
-        new std::ifstream(fileNameGender));
+    std::unique_ptr<std::ifstream> fileGenderUPtr(new std::ifstream(fileNameGender));
     if (!fileGenderUPtr->is_open()) {
         std::cout << "Can not open gender file!" << std::endl;
         return;
@@ -21,8 +20,7 @@ void Application::run(int argc, char **argv) {
     std::unordered_map<size_t, std::string> genderByID;
     fillMapGenderByID(*fileGenderUPtr, genderByID);
 
-    std::unique_ptr<std::ifstream> fileArtistUPtr(
-        new std::ifstream(fileNameArtist));
+    std::unique_ptr<std::ifstream> fileArtistUPtr(new std::ifstream(fileNameArtist));
     if (!fileArtistUPtr->is_open()) {
         std::cout << "Can not open artist file!" << std::endl;
         return;
@@ -30,11 +28,9 @@ void Application::run(int argc, char **argv) {
     findArtists(*fileArtistUPtr, artistName, genderByID, std::cout);
 }
 
-ReturnValues Application::readArgs(int argc, char **argv,
-                                   std::filesystem::path &fileNameArtist,
-                                   std::filesystem::path &fileNameGender,
-                                   std::filesystem::path &artistName,
-                                   std::ostream &out) {
+ReturnValues Application::readArgs(int argc, char** argv, std::filesystem::path& fileNameArtist,
+                                   std::filesystem::path& fileNameGender, std::filesystem::path& artistName,
+                                   std::ostream& out) {
     auto args = std::span(argv, static_cast<size_t>(argc));
     for (int i = 1; i < argc; ++i) {
         if (std::string_view(args[i]) == "--help") {
@@ -59,8 +55,7 @@ ReturnValues Application::readArgs(int argc, char **argv,
     return ReturnValues::fileNamesReceived;
 }
 
-void Application::fillMapGenderByID(
-    std::istream &data, std::unordered_map<size_t, std::string> &genderByID) {
+void Application::fillMapGenderByID(std::istream& data, std::unordered_map<size_t, std::string>& genderByID) {
     std::string line;
     while (getline(data, line)) {
         size_t ID = std::stoi(getField(fieldPosition::GENDER_ID, line));
@@ -69,10 +64,9 @@ void Application::fillMapGenderByID(
     }
 }
 
-bool Application::AllFieldsAreEmpty(
-    const std::string &line,
-    const std::vector<fieldPosition> &requiredFieldPositions,
-    const std::string &emptySeq) {
+bool Application::AllFieldsAreEmpty(const std::string& line,
+                                    const std::vector<fieldPosition>& requiredFieldPositions,
+                                    const std::string& emptySeq) {
     for (auto position : requiredFieldPositions) {
         if (getField(position, line) != emptySeq) {
             return false;
@@ -81,10 +75,8 @@ bool Application::AllFieldsAreEmpty(
     return true;
 };
 
-void Application::findArtists(
-    std::istream &data, const std::string &artistName,
-    const std::unordered_map<size_t, std::string> &genderByID,
-    std::ostream &out) {
+void Application::findArtists(std::istream& data, const std::string& artistName,
+                              const std::unordered_map<size_t, std::string>& genderByID, std::ostream& out) {
     std::string line = "";
     size_t artistsCounter = 0;
     out << "YEAR\t\tMONTH\t\tDAY\t\tGENDER" << std::endl;
@@ -98,8 +90,7 @@ void Application::findArtists(
     out << "Total found " << artistsCounter << " artists." << std::endl;
 }
 
-std::string Application::getField(fieldPosition position,
-                                  const std::string &line) {
+std::string Application::getField(fieldPosition position, const std::string& line) {
     size_t currentPos = 0;
 
     for (size_t i = 0; i < position; ++i) {
@@ -110,16 +101,13 @@ std::string Application::getField(fieldPosition position,
     return line.substr(currentPos, fieldLength);
 }
 
-void Application::printArtist(
-    const std::string &line,
-    const std::unordered_map<size_t, std::string> &genderByID,
-    std::ostream &out) {
+void Application::printArtist(const std::string& line,
+                              const std::unordered_map<size_t, std::string>& genderByID, std::ostream& out) {
     const std::string empty = "\\N";
     const std::string sep = "\t\t";
 
-    std::vector<fieldPosition> requiredFieldPositions = {
-        fieldPosition::YEAR, fieldPosition::MONTH, fieldPosition::DAY,
-        fieldPosition::GENDER};
+    std::vector<fieldPosition> requiredFieldPositions = {fieldPosition::YEAR, fieldPosition::MONTH,
+                                                         fieldPosition::DAY, fieldPosition::GENDER};
     if (AllFieldsAreEmpty(line, requiredFieldPositions, empty)) {
         return;
     }

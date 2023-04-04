@@ -1,10 +1,12 @@
 BasedOnStyle: Google
-ColumnLimit: '110'
+AccessModifierOffset: '-3'
 AllowShortFunctionsOnASingleLine: Inline
+ColumnLimit: '110'
+DerivePointerAlignment: 'false'
 IndentWidth: '4'
 Language: Cpp
 MaxEmptyLinesToKeep: '1'
-PointerAlignment: Right
+PointerAlignment: Left
 SortIncludes: 'false'
 SpaceAfterLogicalNot: 'false'
 SpaceAfterTemplateKeyword: 'true'
@@ -21,4 +23,3 @@ SpacesInContainerLiterals: 'false'
 SpacesInParentheses: 'false'
 SpacesInSquareBrackets: 'false'
 TabWidth: '4'
-AccessModifierOffset: '-3'
