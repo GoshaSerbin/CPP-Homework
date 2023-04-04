@@ -5,10 +5,10 @@
 #include <span>
 
 void Application::run(int argc, char **argv) {
-    std::string fileNameArtist {};
-    std::string fileNameGender {};
-    std::string artistName {};
-    if (readArgs(argc, argv, &fileNameArtist, &fileNameGender, &artistName,
+    std::filesystem::path fileNameArtist {};
+    std::filesystem::path fileNameGender {};
+    std::filesystem::path artistName {};
+    if (readArgs(argc, argv, fileNameArtist, fileNameGender, artistName,
                  std::cout) != returnValues::fileNamesReceived) {
         return;
     }
@@ -31,9 +31,9 @@ void Application::run(int argc, char **argv) {
 }
 
 returnValues Application::readArgs(int argc, char **argv,
-                                   std::string *const fileNameArtist,
-                                   std::string *const fileNameGender,
-                                   std::string *const artistName,
+                                   std::filesystem::path &fileNameArtist,
+                                   std::filesystem::path &fileNameGender,
+                                   std::filesystem::path &artistName,
                                    std::ostream &out) {
     auto args = std::span(argv, static_cast<size_t>(argc));
     for (int i = 1; i < argc; ++i) {
@@ -47,11 +47,11 @@ returnValues Application::readArgs(int argc, char **argv,
         std::string opt = arg.substr(0, pos);
         std::string val = arg.substr(pos + 1);
         if (opt == "--artist_file_path") {
-            *fileNameArtist = val;
+            fileNameArtist = val;
         } else if (opt == "--gender_file_path") {
-            *fileNameGender = val;
+            fileNameGender = val;
         } else if (opt == "--artist_name") {
-            *artistName = val;
+            artistName = val;
         } else {
             std::cout << "Unknown option ignored.\n";
         }
@@ -143,7 +143,7 @@ void Application::printArtist(
                     out << genderByID.at(genderID) << sep;
 
                 } catch (std::invalid_argument const &ex) {
-                    std::cerr << "Gender file is not correct." << std::endl;
+                    std::cerr << "Gender file is not correct.\n";
                     throw;
                 }
                 break;

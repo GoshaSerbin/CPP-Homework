@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -25,9 +26,9 @@ class Application {
     };
 
     returnValues readArgs(int argc, char **argv,
-                          std::string *const fileNameArtist,
-                          std::string *const fileNameGender,
-                          std::string *const artistName, std::ostream &out);
+                          std::filesystem::path &fileNameArtist,
+                          std::filesystem::path &fileNameGender,
+                          std::filesystem::path &artistName, std::ostream &out);
     void fillMapGenderByID(
         std::istream &data,
         std::unordered_map<size_t, std::string> *const genderByID);
