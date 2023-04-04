@@ -8,7 +8,7 @@ void Application::run(int argc, char** argv) {
     std::filesystem::path fileNameArtist {};
     std::filesystem::path fileNameGender {};
     std::filesystem::path artistName {};
-    if (readArgs(argc, argv, fileNameArtist, fileNameGender, artistName, std::cout) !=
+    if (parseArgs(argc, argv, fileNameArtist, fileNameGender, artistName, std::cout) !=
         ReturnValues::fileNamesReceived) {
         return;
     }
@@ -30,43 +30,34 @@ void Application::run(int argc, char** argv) {
     printArtistsInfo(artistsInfo, genderByID, std::cout);
 }
 
-ReturnValues Application::readArgs(int argc, char** argv, std::filesystem::path& fileNameArtist,
-                                   std::filesystem::path& fileNameGender, std::filesystem::path& artistName,
-                                   std::ostream& out) {
-    auto args = std::span(argv, static_cast<size_t>(argc));
-    for (int i = 1; i < argc; ++i) {
-        if (std::string_view(args[i]) == "--help") {
-            out << "Requared options: --artist_file_path --gender_file_path "
-                   "--artist_name\n";
-            return ReturnValues::fileNamesNotReceived;
-        }
-        std::string arg(args[i]);
-        size_t pos = arg.find('=');
-        std::string opt = arg.substr(0, pos);
-        std::string val = arg.substr(pos + 1);
-        if (opt == "--artist_file_path") {
-            fileNameArtist = val;
-        } else if (opt == "--gender_file_path") {
-            fileNameGender = val;
-        } else if (opt == "--artist_name") {
-            artistName = val;
-        } else {
-            std::cout << "Unknown option ignored.\n";
-        }
+ReturnValues Application::parseArgs(int argc, char** argv, std::filesystem::path& fileNameArtist,
+                                    std::filesystem::path& fileNameGender, std::filesystem::path& artistName,
+                                    std::ostream& out) {
+    std::unordered_map<std::string, std::string> args;
+    for (int i = 1; i < argc; i += 2) {
+        args[argv[i]] = argv[i + 1];
     }
+    if (args.count("--artist_file_path") == 0 || args.count("--gender_file_path") == 0 ||
+        args.count("--artist_name") == 0) {
+        out << "Requared options: --artist_file_path, --gender_file_path, --artist_name\n";
+        return ReturnValues::fileNamesNotReceived;
+    }
+    fileNameArtist = args["--artist_file_path"];
+    fileNameGender = args["--gender_file_path"];
+    artistName = args["--artist_name"];
     return ReturnValues::fileNamesReceived;
 }
 
 void Application::fillMapGenderByID(std::istream& data, std::unordered_map<size_t, std::string>& genderByID) {
     std::string line;
     while (getline(data, line)) {
-        size_t ID = std::stoi(getField(fieldPosition::GENDER_ID, line));
+        const size_t ID = std::stoi(getField(fieldPosition::GENDER_ID, line));
         std::string name = getField(fieldPosition::GENDER_NAME, line);
         genderByID[ID] = name;
     }
 }
 
-bool Application::AllFieldsAreEmpty(const std::string& line,
+bool Application::allFieldsAreEmpty(const std::string& line,
                                     const std::vector<fieldPosition>& requiredFieldPositions,
                                     const std::string& emptySeq) {
     for (auto position : requiredFieldPositions) {
@@ -119,7 +110,7 @@ void Application::printArtistInfo(const std::string& line,
 
     std::vector<fieldPosition> requiredFieldPositions = {fieldPosition::YEAR, fieldPosition::MONTH,
                                                          fieldPosition::DAY, fieldPosition::GENDER};
-    if (AllFieldsAreEmpty(line, requiredFieldPositions, empty)) {
+    if (allFieldsAreEmpty(line, requiredFieldPositions, empty)) {
         return;
     }
     for (auto position : requiredFieldPositions) {
@@ -130,7 +121,7 @@ void Application::printArtistInfo(const std::string& line,
         };
         switch (position) {
             case fieldPosition::GENDER: {
-                size_t genderID = std::stoi(field);
+                const size_t genderID = std::stoi(field);
                 out << genderByID.at(genderID) << sep;
                 break;
             }

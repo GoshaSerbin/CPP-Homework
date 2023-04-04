@@ -27,11 +27,11 @@ class Application {
         GENDER = 12
     };
 
-    [[nodiscard]] ReturnValues readArgs(int argc, char** argv, std::filesystem::path& fileNameArtist,
-                                        std::filesystem::path& fileNameGender,
-                                        std::filesystem::path& artistName, std::ostream& out);
+    [[nodiscard]] ReturnValues parseArgs(int argc, char** argv, std::filesystem::path& fileNameArtist,
+                                         std::filesystem::path& fileNameGender,
+                                         std::filesystem::path& artistName, std::ostream& out);
     void fillMapGenderByID(std::istream& data, std::unordered_map<size_t, std::string>& genderByID);
-    [[nodiscard]] bool AllFieldsAreEmpty(const std::string& line,
+    [[nodiscard]] bool allFieldsAreEmpty(const std::string& line,
                                          const std::vector<fieldPosition>& requiredFieldPositions,
                                          const std::string& emptySeq);
     [[nodiscard]] std::string getField(fieldPosition position, const std::string& line);
