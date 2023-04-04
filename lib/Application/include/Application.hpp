@@ -27,7 +27,7 @@ class Application {
     returnValues readArgs(int argc, char **argv,
                           std::string *const fileNameArtist,
                           std::string *const fileNameGender,
-                          std::string *const artistName);
+                          std::string *const artistName, std::ostream &out);
     void fillMapGenderByID(
         std::istream &data,
         std::unordered_map<size_t, std::string> *const genderByID);

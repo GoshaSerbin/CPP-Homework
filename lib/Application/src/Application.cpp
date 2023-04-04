@@ -8,8 +8,8 @@ void Application::run(int argc, char **argv) {
     std::string fileNameArtist {};
     std::string fileNameGender {};
     std::string artistName {};
-    if (readArgs(argc, argv, &fileNameArtist, &fileNameGender, &artistName) !=
-        returnValues::fileNamesReceived) {
+    if (readArgs(argc, argv, &fileNameArtist, &fileNameGender, &artistName,
+                 std::cout) != returnValues::fileNamesReceived) {
         return;
     }
     std::unique_ptr<std::ifstream> fileGenderUPtr(
@@ -33,14 +33,13 @@ void Application::run(int argc, char **argv) {
 returnValues Application::readArgs(int argc, char **argv,
                                    std::string *const fileNameArtist,
                                    std::string *const fileNameGender,
-                                   std::string *const artistName) {
+                                   std::string *const artistName,
+                                   std::ostream &out) {
     auto args = std::span(argv, static_cast<size_t>(argc));
     for (int i = 1; i < argc; ++i) {
         if (std::string_view(args[i]) == "--help") {
-            std::cout << "Requared options:" << std::endl;
-            std::cout << "--artist_file_path" << std::endl;
-            std::cout << "--gender_file_path" << std::endl;
-            std::cout << "--artist_name" << std::endl;
+            out << "Requared options: --artist_file_path --gender_file_path "
+                   "--artist_name\n";
             return returnValues::fileNamesNotReceived;
         }
         std::string arg(args[i]);
@@ -54,7 +53,7 @@ returnValues Application::readArgs(int argc, char **argv,
         } else if (opt == "--artist_name") {
             *artistName = val;
         } else {
-            std::cout << "Unknown option ignored." << std::endl;
+            std::cout << "Unknown option ignored.\n";
         }
     }
     return returnValues::fileNamesReceived;
