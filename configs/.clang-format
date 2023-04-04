@@ -1,4 +1,5 @@
 BasedOnStyle: Google
+ColumnLimit: '110'
 AllowShortFunctionsOnASingleLine: Inline
 IndentWidth: '4'
 Language: Cpp
