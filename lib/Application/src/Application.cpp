@@ -12,22 +12,22 @@ void Application::run(int argc, char **argv) {
         returnValues::fileNamesReceived) {
         return;
     }
-
-    std::ifstream fileGender(fileNameGender);
-    if (!fileGender.is_open()) {
+    std::unique_ptr<std::ifstream> fileGenderUPtr(
+        new std::ifstream(fileNameGender));
+    if (!fileGenderUPtr->is_open()) {
         std::cout << "Can not open gender file!" << std::endl;
         return;
     }
     std::unordered_map<size_t, std::string> genderByID;
-    fillMapGenderByID(fileGender, &genderByID);
+    fillMapGenderByID(*fileGenderUPtr, &genderByID);
 
-    std::ifstream fileArtist(fileNameArtist);
-    if (!fileArtist.is_open()) {
+    std::unique_ptr<std::ifstream> fileArtistUPtr(
+        new std::ifstream(fileNameArtist));
+    if (!fileArtistUPtr->is_open()) {
         std::cout << "Can not open artist file!" << std::endl;
         return;
     }
-    findArtists(fileArtist, artistName, genderByID, std::cout);
-    fileArtist.close();
+    findArtists(*fileArtistUPtr, artistName, genderByID, std::cout);
 }
 
 returnValues Application::readArgs(int argc, char **argv,
