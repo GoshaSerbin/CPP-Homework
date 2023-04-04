@@ -29,9 +29,8 @@ class Application {
                           std::filesystem::path &fileNameArtist,
                           std::filesystem::path &fileNameGender,
                           std::filesystem::path &artistName, std::ostream &out);
-    void fillMapGenderByID(
-        std::istream &data,
-        std::unordered_map<size_t, std::string> *const genderByID);
+    void fillMapGenderByID(std::istream &data,
+                           std::unordered_map<size_t, std::string> &genderByID);
     void findArtists(std::istream &data, const std::string &artistName,
                      const std::unordered_map<size_t, std::string> &genderByID,
                      std::ostream &out);

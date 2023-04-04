@@ -19,7 +19,7 @@ void Application::run(int argc, char **argv) {
         return;
     }
     std::unordered_map<size_t, std::string> genderByID;
-    fillMapGenderByID(*fileGenderUPtr, &genderByID);
+    fillMapGenderByID(*fileGenderUPtr, genderByID);
 
     std::unique_ptr<std::ifstream> fileArtistUPtr(
         new std::ifstream(fileNameArtist));
@@ -60,8 +60,7 @@ returnValues Application::readArgs(int argc, char **argv,
 }
 
 void Application::fillMapGenderByID(
-    std::istream &data,
-    std::unordered_map<size_t, std::string> *const genderByID) {
+    std::istream &data, std::unordered_map<size_t, std::string> &genderByID) {
     std::string line;
     while (getline(data, line)) {
         size_t ID = 0;
@@ -72,7 +71,7 @@ void Application::fillMapGenderByID(
             throw;
         }
         std::string name = getField(fieldPosition::GENDER_NAME, line);
-        (*genderByID)[ID] = name;
+        genderByID[ID] = name;
     }
 }
 
@@ -137,16 +136,11 @@ void Application::printArtist(
             continue;
         };
         switch (position) {
-            case fieldPosition::GENDER:
-                try {
-                    size_t genderID = std::stoi(field);
-                    out << genderByID.at(genderID) << sep;
-
-                } catch (std::invalid_argument const &ex) {
-                    std::cerr << "Gender file is not correct.\n";
-                    throw;
-                }
+            case fieldPosition::GENDER: {
+                size_t genderID = std::stoi(field);
+                out << genderByID.at(genderID) << sep;
                 break;
+            }
             default:
                 out << field << sep;
         }
