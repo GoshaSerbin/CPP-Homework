@@ -9,7 +9,7 @@ void Application::run(int argc, char **argv) {
     std::filesystem::path fileNameGender {};
     std::filesystem::path artistName {};
     if (readArgs(argc, argv, fileNameArtist, fileNameGender, artistName,
-                 std::cout) != returnValues::fileNamesReceived) {
+                 std::cout) != ReturnValues::fileNamesReceived) {
         return;
     }
     std::unique_ptr<std::ifstream> fileGenderUPtr(
@@ -30,7 +30,7 @@ void Application::run(int argc, char **argv) {
     findArtists(*fileArtistUPtr, artistName, genderByID, std::cout);
 }
 
-returnValues Application::readArgs(int argc, char **argv,
+ReturnValues Application::readArgs(int argc, char **argv,
                                    std::filesystem::path &fileNameArtist,
                                    std::filesystem::path &fileNameGender,
                                    std::filesystem::path &artistName,
@@ -40,7 +40,7 @@ returnValues Application::readArgs(int argc, char **argv,
         if (std::string_view(args[i]) == "--help") {
             out << "Requared options: --artist_file_path --gender_file_path "
                    "--artist_name\n";
-            return returnValues::fileNamesNotReceived;
+            return ReturnValues::fileNamesNotReceived;
         }
         std::string arg(args[i]);
         size_t pos = arg.find('=');
@@ -56,20 +56,14 @@ returnValues Application::readArgs(int argc, char **argv,
             std::cout << "Unknown option ignored.\n";
         }
     }
-    return returnValues::fileNamesReceived;
+    return ReturnValues::fileNamesReceived;
 }
 
 void Application::fillMapGenderByID(
     std::istream &data, std::unordered_map<size_t, std::string> &genderByID) {
     std::string line;
     while (getline(data, line)) {
-        size_t ID = 0;
-        try {
-            ID = std::stoi(getField(fieldPosition::GENDER_ID, line));
-        } catch (std::invalid_argument const &ex) {
-            std::cerr << "Gender file is not correct." << std::endl;
-            throw;
-        }
+        size_t ID = std::stoi(getField(fieldPosition::GENDER_ID, line));
         std::string name = getField(fieldPosition::GENDER_NAME, line);
         genderByID[ID] = name;
     }
