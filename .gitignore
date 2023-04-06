@@ -36,7 +36,7 @@
 *.app
 
 ### VisualStudioCode ###
-.vscode/*
+.vscode
 
 # Local History for Visual Studio Code
 .history/
