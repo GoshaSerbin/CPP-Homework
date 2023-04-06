@@ -12,17 +12,17 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 enable_testing()
 add_executable(
-    unit_tests
-    unit_tests.cpp
+    tests
+    tests.cpp
     ../src/Application.cpp
     ../src/InputParser.cpp
     ../src/MusicDataBaseHandler.cpp
     ../src/OutputFormatter.cpp
 )
 target_link_libraries(
-    unit_tests
+    tests
     GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(unit_tests)
+gtest_discover_tests(tests)
