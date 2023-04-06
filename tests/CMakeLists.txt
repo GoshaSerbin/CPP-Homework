@@ -8,16 +8,20 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-enable_testing()
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
+enable_testing()
 add_executable(
     unit_tests
-    unit_test.cpp
+    unit_tests.cpp
+    ../src/Application.cpp
+    ../src/InputParser.cpp
+    ../src/MusicDataBaseHandler.cpp
+    ../src/OutputFormatter.cpp
 )
 target_link_libraries(
     unit_tests
     GTest::gtest_main
-    Application
 )
 
 include(GoogleTest)
