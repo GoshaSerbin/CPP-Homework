@@ -3,7 +3,7 @@
 bool OutputFormatter::allFieldsAreEmpty(const Artist& artist) const {
     return artist.year == emptyFieldValue && artist.month == emptyFieldValue &&
            artist.day == emptyFieldValue && artist.gender == emptyFieldValue;
-};
+}
 
 void OutputFormatter::printArtists(const std::vector<Artist>& artists, std::ostream& out) const {
     std::string line {};
