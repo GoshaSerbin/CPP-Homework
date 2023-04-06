@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.13
       - name: Build
         run: |
           cmake -B build
@@ -24,10 +26,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: c-linter
-        uses: tonybaloney/cppcheck-action@master
-        with:
-          path: ./src ./include ./tests 
-          opts: --enable=all --suppress=missingInclude --std=c++20 
+        uses: deep5050/cppcheck-action@main
 
   clang-format:
     runs-on: ubuntu-latest
@@ -37,21 +36,14 @@ jobs:
         with:
           source: 'src include tests'
           extensions: 'h,cpp'
+          clangFormatVersion: 14
+          style: 'file:configs/.clang-format'
 
   clang-tidy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install clang-tidy
-        run: |
-          sudo apt-get update -y           
-          sudo apt-get install -y clang-tidy
-      - name: Build
-        run: |
-          cmake -B build
-          cmake --build build
-      - name: Run clang-tidy
-        run: clang-tidy --config-file=./configs/.clang-tidy ./src/main.cpp ./lib/utils/src/utils.cpp ./lib/utils/include/utils.hpp -p build
+      - uses: cpp-linter/cpp-linter-action@v2
 
   cpplint:
     runs-on: ubuntu-latest
