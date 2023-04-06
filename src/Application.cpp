@@ -12,28 +12,28 @@
 #include <string>
 #include <vector>
 
-void Application::run(int argc, char** argv) {
+void Application::run(int argc, char** argv, std::ostream& out) {
     InputData data;
-    if (InputParser::readArgs(argc, argv, data, std::cout) != ReturnValues::dataReceived) {
+    if (InputParser::readArgs(argc, argv, data, out) != ReturnValues::dataReceived) {
         return;
     }
 
     std::unique_ptr<std::ifstream> fileGenderUPtr(new std::ifstream(data.genderFilePath));
     if (!fileGenderUPtr->is_open()) {
-        std::cout << "Can not open gender file!" << std::endl;
+        out << "Can not open gender file!" << std::endl;
         return;
     }
     std::unique_ptr<std::ifstream> fileArtistUPtr(new std::ifstream(data.artistFilePath));
     if (!fileArtistUPtr->is_open()) {
-        std::cout << "Can not open artist file!" << std::endl;
+        out << "Can not open artist file!" << std::endl;
         return;
     }
 
     MusicDataBaseHandler db;
     db.fillMapGenderByID(*fileGenderUPtr);
     std::vector<Artist> artists(db.getSuitableArtists(*fileArtistUPtr, data.artistName));
-    std::cout << "Total found " << artists.size() << " artists.\n";
+    out << "Total found " << artists.size() << " artists.\n";
 
     OutputFormatter output;
-    output.printArtists(artists, std::cout);
+    output.printArtists(artists, out);
 }

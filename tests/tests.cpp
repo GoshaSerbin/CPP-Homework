@@ -7,6 +7,7 @@
 
 #include <gtest/gtest.h>
 #include <sstream>
+#include <vector>
 
 class ReadArgsTest : public testing::Test {
  protected:
@@ -142,4 +143,31 @@ TEST_F(OutputFormatterTest, AllFieldAreEmptyFalseTest) {
 TEST_F(OutputFormatterTest, AllFieldAreEmptyTrueTest) {
     artist.name = artist.gender = out.emptyFieldValue;
     EXPECT_TRUE(out.allFieldsAreEmpty(artist));
+}
+
+class GetSuitableArtistsTest : public testing::Test {
+ protected:
+    void SetUp() override {
+        ss << "\t\tNAME1\t\tYEAR1\tMONTH1\tDAY1\t\t\t\t\t\t\\N\n";
+        ss << "\t\tNAME2\t\tYEAR2\tMONTH2\tDAY2\t\t\t\t\t\t\\N\n";
+        ss << "\t\tNAME3\t\tYEAR3\tMONTH3\tDAY3\t\t\t\t\t\t\\N\n";
+    }
+    void TearDown() override {}
+
+    MusicDataBaseHandler db;
+    std::stringstream ss;
+};
+
+TEST_F(GetSuitableArtistsTest, getNonexistingNameTest) {
+    std::vector<Artist> artists = db.getSuitableArtists(ss, "NonexistingName");
+    size_t actual = artists.size();
+    size_t expected = 0;
+    EXPECT_EQ(expected, actual);
+}
+
+TEST_F(GetSuitableArtistsTest, getExistingNameTest) {
+    std::vector<Artist> artists = db.getSuitableArtists(ss, "NAME2");
+    std::string actual = artists.at(0).year;
+    std::string expected = "YEAR2";
+    EXPECT_EQ(expected, actual);
 }
