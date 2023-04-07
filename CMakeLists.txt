@@ -9,9 +9,9 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 set(INCLUDES include)
 
 if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
-    add_subdirectory(tests)
     add_compile_options(--coverage)
     add_link_options(--coverage)
+    add_subdirectory(tests)
 
     # add_compile_options(-fsanitize=address)
 endif()

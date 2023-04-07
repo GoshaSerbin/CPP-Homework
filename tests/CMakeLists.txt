@@ -9,7 +9,6 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-
 enable_testing()
 add_executable(
     tests
