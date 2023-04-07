@@ -20,7 +20,7 @@ jobs:
           cmake -B build -DCMAKE_BUILD_TYPE=${{build_type}} -DCMAKE_EXPORT_COMPILE_COMMANDS=True
           cmake --build build
       - name: Save artifacts
-      - uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           path: build/compile_commands.json
 
