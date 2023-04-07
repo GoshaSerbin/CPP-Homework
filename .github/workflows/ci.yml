@@ -17,7 +17,7 @@ jobs:
         uses: jwlawson/actions-setup-cmake@v1.13
       - name: Build
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+          cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=True
           cmake --build build
 
   cppcheck:  
@@ -41,11 +41,14 @@ jobs:
 
   clang-tidy:
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - uses: actions/checkout@v3
-      - uses: aminya/setup-cpp@v1
-        with:
-          clangtidy: true 
+      - name: Install clang-tidy
+        run: |
+          sudo apt-get update -y           
+          sudo apt-get install -y clang-tidy
+      - name: Run clang-tidy
+        run: clang-tidy ./src/*.cpp  ./include/*.hpp -p build
 
   test:
     runs-on: ubuntu-latest
