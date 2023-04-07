@@ -5,7 +5,7 @@ on:
     branches:
       - hw1
 env:
-  BUILD_TYPE: Debug
+  build_type: Debug
 
 jobs:
   build:
@@ -17,12 +17,12 @@ jobs:
         uses: jwlawson/actions-setup-cmake@v1.13
       - name: Build
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=True
+          cmake -B build -DCMAKE_BUILD_TYPE=${{build_type}} -DCMAKE_EXPORT_COMPILE_COMMANDS=True
           cmake --build build
-    artifacts:
-      paths:
-        - build/tests
-        - build/compile_commands.json
+      - name: Save artifacts
+      - uses: actions/upload-artifact@v3
+        with:
+          path: build/compile_commands.json
 
   cppcheck:  
     runs-on: ubuntu-latest
@@ -51,6 +51,10 @@ jobs:
         run: |
           sudo apt-get update -y           
           sudo apt-get install -y clang-tidy
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          path: build/compile_commands.json
       - name: Run clang-tidy
         run: clang-tidy ./src/*.cpp  ./include/*.hpp -p build
 
