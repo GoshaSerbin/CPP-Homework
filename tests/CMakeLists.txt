@@ -14,10 +14,10 @@ enable_testing()
 add_executable(
     tests
     tests.cpp
-    ../src/Application.cpp
-    ../src/InputParser.cpp
-    ../src/MusicDataBaseHandler.cpp
-    ../src/OutputFormatter.cpp
+    ${PROJECT_SOURCE_DIR}/src/Application.cpp
+    ${PROJECT_SOURCE_DIR}/src/InputParser.cpp
+    ${PROJECT_SOURCE_DIR}/src/MusicDataBaseHandler.cpp
+    ${PROJECT_SOURCE_DIR}/src/OutputFormatter.cpp
 )
 target_link_libraries(
     tests

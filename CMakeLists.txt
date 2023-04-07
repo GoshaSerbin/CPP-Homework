@@ -12,7 +12,8 @@ if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
     add_subdirectory(tests)
     add_compile_options(--coverage)
     add_link_options(--coverage)
-    add_compile_options(-fsanitize=address)
+
+    # add_compile_options(-fsanitize=address)
 endif()
 
 include_directories(${INCLUDES})
