@@ -91,8 +91,8 @@ jobs:
         id: finder
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
-        number: ${{ steps.finder.outputs.pr }}
-        recreate: true
-        path: code-coverage-results.md
+          number: ${{ steps.finder.outputs.pr }}
+          recreate: true
+          path: code-coverage-results.md
 
                      
