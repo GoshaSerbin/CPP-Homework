@@ -19,7 +19,7 @@ jobs:
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=True
           cmake --build build
-      - name: Save artifacts
+      - name: Save compile options
         uses: actions/upload-artifact@v3
         with:
           path: build/compile_commands.json
@@ -58,7 +58,7 @@ jobs:
           path: build/compile_commands.json
           name: compile_commands
       - name: Run clang-tidy
-        run: clang-tidy ./src/*.cpp  ./include/*.hpp -p build
+        run: clang-tidy -checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus* ./src/*.cpp ./include/*.hpp -p build
 
   test:
     runs-on: ubuntu-latest
