@@ -16,8 +16,11 @@ class OutputFormatter {
     void printArtists(const std::vector<Artist>& artists, std::ostream& out) const;
     void printArtist(const Artist& artist, std::ostream& out) const;
 
-    OutputFormatter() : emptyFieldValue("\\N"), fieldSeparator("\t\t") {};
+    OutputFormatter() : emptyFieldValue("\\N"), fieldSeparator("\t\t") {
+        tableHeader = "YEAR\t\tMONTH\t\tDAY\t\tGENDER\n";
+    };
 
+    std::string tableHeader;
     std::string emptyFieldValue;
     std::string fieldSeparator;
 };

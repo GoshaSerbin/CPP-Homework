@@ -7,7 +7,7 @@ bool OutputFormatter::allFieldsAreEmpty(const Artist& artist) const {
 
 void OutputFormatter::printArtists(const std::vector<Artist>& artists, std::ostream& out) const {
     std::string line {};
-    out << "YEAR\t\tMONTH\t\tDAY\t\tGENDER\n";
+    out << tableHeader;
     for (const auto& artist : artists) {
         printArtist(artist, out);
     }
