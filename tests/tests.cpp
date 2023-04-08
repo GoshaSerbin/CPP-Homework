@@ -171,3 +171,34 @@ TEST_F(GetSuitableArtistsTest, getExistingNameTest) {
     std::string expected = "YEAR2";
     EXPECT_EQ(expected, actual);
 }
+
+class IntegrationalTestMDBHandlerAndOutputFormatter : public testing::Test {
+ protected:
+    void SetUp() override {
+        artistInfo1 = "\t\tNAME1\t\tYEAR1\tMONTH1\tDAY1\t\t\t\t\t\t0\n";
+        artistInfo2 = "\t\tNAME2\t\tYEAR2\tMONTH2\tDAY2\t\t\t\t\t\t1\n";
+        ssArtistsInfo << artistInfo1;
+        ssArtistsInfo << artistInfo2;
+
+        ssGenderInfo << "0\tMale\n1\tFemale\n2\tOther";
+    }
+    void TearDown() override {}
+    std::string artistInfo1;
+    std::string artistInfo2;
+    Artist artist2;
+    MusicDataBaseHandler db;
+    OutputFormatter outputFormatter;
+    std::stringstream ssArtistsInfo;
+    std::stringstream ssGenderInfo;
+};
+
+TEST_F(IntegrationalTestMDBHandlerAndOutputFormatter, BasicCase) {
+    db.fillMapGenderByID(ssGenderInfo);
+
+    std::vector<Artist> artists(db.getSuitableArtists(ssArtistsInfo, "NAME2"));
+    std::stringstream ssActualOut;
+    outputFormatter.printArtists(artists, ssActualOut);
+    std::string actual = ssActualOut.str();
+    std::string expected = outputFormatter.tableHeader + "YEAR2\t\tMONTH2\t\tDAY2\t\tFemale\n";
+    EXPECT_EQ(expected, actual);
+}
