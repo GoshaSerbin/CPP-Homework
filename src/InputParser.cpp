@@ -12,7 +12,7 @@ ReturnValues InputParser::readArgs(int argc, char** argv, InputData& data, std::
     }
     if (args.count("--artist_file_path") == 0 || args.count("--gender_file_path") == 0 ||
         args.count("--artist_name") == 0) {
-        out << "Requared options: --artist_file_path, --gender_file_path, --artist_name\n";
+        out << "Required options: --artist_file_path, --gender_file_path, --artist_name\n";
         return ReturnValues::dataNotReceived;
     }
     data.artistFilePath = args["--artist_file_path"];
