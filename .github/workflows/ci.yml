@@ -1,0 +1,99 @@
+---
+name: CI
+on:
+  push:
+    branches:
+      - hw1
+env:
+  build_type: Debug
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.13
+      - name: Build
+        run: |
+          cmake -B build
+          cmake --build build
+
+  cppcheck:  
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: c-linter
+        uses: deep5050/cppcheck-action@main
+
+  clang-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: DoozyX/clang-format-lint-action@v0.14
+        with:
+          source: 'src include tests'
+          extensions: 'h,cpp'
+          clangFormatVersion: 14
+          style: 'file:configs/.clang-format'
+
+  clang-tidy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Install clang-tidy
+        run: |
+          sudo apt-get update -y           
+          sudo apt-get install -y clang-tidy
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.13
+      - name: Build
+        run: |
+          cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=True
+          cmake --build build
+      - name: Run clang-tidy
+        run: clang-tidy -checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus* ./src/*.cpp ./include/*.hpp -p build
+
+  test:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.13
+      - name: Build
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build
+      - name: Run tests
+        run: |
+          ctest --output-on-failure --repeat-until-fail 100 --test-dir ./build/tests
+          sudo apt-get update -y           
+          sudo apt-get install -y gcovr
+          gcovr -e '.*test*' -x >> cover.xml
+      - name: Code Coverage Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: cover.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: false
+          indicators: true
+          output: both
+          thresholds: '60 80'
+
+      - uses: jwalton/gh-find-current-pr@v1
+        id: finder
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ steps.finder.outputs.pr }}
+          recreate: true
+          path: code-coverage-results.md
