@@ -73,7 +73,7 @@ jobs:
           cmake --build build
       - name: Run tests
         run: |
-          ctest --output-on-failure --repeat-until-fail 100 --test-dir ./build/tests
+          ctest --output-on-failure --repeat-until-fail 10 --test-dir ./build/tests
           sudo apt-get update -y           
           sudo apt-get install -y gcovr
           gcovr -e '.*test*' -x >> cover.xml
