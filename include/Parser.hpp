@@ -27,7 +27,7 @@ class Parser {
         {BinaryOperations::add, 1}, {BinaryOperations::substract, 1}, {BinaryOperations::divide, 2}};
 
  private:
-    bool hasCorrectBracketSequence() noexcept;
+    [[nodiscard]] bool hasCorrectBracketSequence() noexcept;
     OperationPriority getPriority(const std::string& operation) noexcept;
     [[nodiscard]] std::string parseToken();
     [[nodiscard]] ICalculatableUPtr parseSimpleCalculatableObject();
