@@ -33,6 +33,6 @@ class Parser {
     [[nodiscard]] ICalculatableUPtr parseSimpleCalculatableObject();
     [[nodiscard]] ICalculatableUPtr parseBinaryCalculatableObject(OperationPriority currentPriority);
 
-    std::string expression;
-    size_t currentParsingPosition;
+    std::string m_expression;
+    size_t m_currentParsingPosition;
 };

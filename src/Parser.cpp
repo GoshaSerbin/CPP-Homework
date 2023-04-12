@@ -8,7 +8,7 @@
 #include <memory>
 #include <unordered_map>
 
-Parser::Parser(std::string expression) : expression(expression), currentParsingPosition(0) {
+Parser::Parser(std::string expression) : m_expression(expression), m_currentParsingPosition(0) {
     if (!hasCorrectBracketSequence()) {
         throw Error("Expression doesn't have correct bracket sequence");
     }
@@ -16,11 +16,11 @@ Parser::Parser(std::string expression) : expression(expression), currentParsingP
 
 bool Parser::hasCorrectBracketSequence() noexcept {
     int bracketCounter = 0;
-    for (int i = 0; i < expression.size(); ++i) {
-        if (expression[i] == '(') {
+    for (int i = 0; i < m_expression.size(); ++i) {
+        if (m_expression[i] == '(') {
             bracketCounter++;
         }
-        if (expression[i] == ')') {
+        if (m_expression[i] == ')') {
             bracketCounter--;
             if (bracketCounter < 0) {
                 return false;
@@ -31,26 +31,27 @@ bool Parser::hasCorrectBracketSequence() noexcept {
 }
 
 std::string Parser::parseToken() {
-    currentParsingPosition = expression.find_first_not_of(" ", currentParsingPosition);
-    if (currentParsingPosition >= expression.size()) {
-        currentParsingPosition = expression.size();
+    m_currentParsingPosition = m_expression.find_first_not_of(" ", m_currentParsingPosition);
+    if (m_currentParsingPosition >= m_expression.size()) {
+        m_currentParsingPosition = m_expression.size();
         return emptyToken;
     }
-    if (std::isdigit(expression[currentParsingPosition])) {
-        size_t newPos = expression.find_first_not_of(acceptableSymbolsForNumbers, currentParsingPosition + 1);
-        std::string number(expression.substr(currentParsingPosition, newPos - currentParsingPosition));
-        currentParsingPosition = newPos;
+    if (std::isdigit(m_expression[m_currentParsingPosition])) {
+        size_t newPos =
+            m_expression.find_first_not_of(acceptableSymbolsForNumbers, m_currentParsingPosition + 1);
+        std::string number(m_expression.substr(m_currentParsingPosition, newPos - m_currentParsingPosition));
+        m_currentParsingPosition = newPos;
         return number;
     }
     for (const auto& token : Parser::acceptableTokens) {
-        if (std::strncmp(expression.c_str() + currentParsingPosition, token.c_str(), token.size()) == 0) {
-            currentParsingPosition += token.size();
+        if (std::strncmp(m_expression.c_str() + m_currentParsingPosition, token.c_str(), token.size()) == 0) {
+            m_currentParsingPosition += token.size();
             return token;
         }
     }
-    std::string undefinedSymbol(1, expression[currentParsingPosition]);
+    std::string undefinedSymbol(1, m_expression[m_currentParsingPosition]);
     std::string errorMessage = "Undefined symbol '" + undefinedSymbol + "' at position " +
-                               std::to_string(currentParsingPosition) +
+                               std::to_string(m_currentParsingPosition) +
                                ", acceptable tokens: " + Parser::printAcceptableTokens();
     throw Error(errorMessage);
 }
@@ -68,7 +69,7 @@ ICalculatableUPtr Parser::parseSimpleCalculatableObject() {
 
     std::string token = parseToken();
     if (token == emptyToken) {
-        throw Error("Can't find needed argument at position " + std::to_string(currentParsingPosition));
+        throw Error("Can't find needed argument at position " + std::to_string(m_currentParsingPosition));
     }
     if (std::isdigit(token[0])) {
         calculatableObjectUPtr = std::make_unique<Number>(std::stod(token));
@@ -76,14 +77,14 @@ ICalculatableUPtr Parser::parseSimpleCalculatableObject() {
     }
 
     if (token == "(") {
-        if (expression[currentParsingPosition] == ')') {
-            throw Error("Empty argument in brackets at position " + std::to_string(currentParsingPosition));
+        if (m_expression[m_currentParsingPosition] == ')') {
+            throw Error("Empty argument in brackets at position " + std::to_string(m_currentParsingPosition));
         };
         calculatableObjectUPtr = parse();
         std::string nextToken = parseToken();
 
         if (nextToken != ")") {
-            std::string errorMessage {"Expected ')' at position " + std::to_string(currentParsingPosition)};
+            std::string errorMessage {"Expected ')' at position " + std::to_string(m_currentParsingPosition)};
             throw Error(errorMessage);
         }
 
@@ -103,7 +104,7 @@ ICalculatableUPtr Parser::parseSimpleCalculatableObject() {
         return calculatableObjectUPtr;
     }
 
-    std::string errorMessage {"Missing argument at position " + std::to_string(currentParsingPosition - 1)};
+    std::string errorMessage {"Missing argument at position " + std::to_string(m_currentParsingPosition - 1)};
     throw Error(errorMessage);
 }
 
@@ -125,7 +126,7 @@ ICalculatableUPtr Parser::parseBinaryCalculatableObject(OperationPriority curren
         }
         OperationPriority newPriority = getPriority(operation);
         if (newPriority <= currentPriority) {
-            currentParsingPosition -= operation.size();
+            m_currentParsingPosition -= operation.size();
             return leftCalculatableObject;
         }
 
