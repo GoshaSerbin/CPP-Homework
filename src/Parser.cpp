@@ -37,8 +37,7 @@ std::string Parser::parseToken() {
         return emptyToken;
     }
     if (std::isdigit(m_expression[m_currentParsingPosition])) {
-        size_t newPos =
-            m_expression.find_first_not_of(acceptableSymbolsForNumbers, m_currentParsingPosition + 1);
+        size_t newPos = m_expression.find_first_not_of(acceptableSymbolsForNumbers, m_currentParsingPosition + 1);
         std::string number(m_expression.substr(m_currentParsingPosition, newPos - m_currentParsingPosition));
         m_currentParsingPosition = newPos;
         return number;
@@ -136,12 +135,12 @@ ICalculatableUPtr Parser::parseBinaryCalculatableObject(OperationPriority curren
                 std::make_unique<Add>(std::move(leftCalculatableObject), std::move(rightCalculatableObject));
         }
         if (operation == BinaryOperations::substract) {
-            leftCalculatableObject = std::make_unique<Subtract>(std::move(leftCalculatableObject),
-                                                                std::move(rightCalculatableObject));
+            leftCalculatableObject =
+                std::make_unique<Subtract>(std::move(leftCalculatableObject), std::move(rightCalculatableObject));
         }
         if (operation == BinaryOperations::divide) {
-            leftCalculatableObject = std::make_unique<Divide>(std::move(leftCalculatableObject),
-                                                              std::move(rightCalculatableObject));
+            leftCalculatableObject =
+                std::make_unique<Divide>(std::move(leftCalculatableObject), std::move(rightCalculatableObject));
         }
     }
 }
