@@ -31,7 +31,7 @@ class Parser {
     OperationPriority getPriority(const std::string& operation) noexcept;
     [[nodiscard]] std::string parseToken();
     [[nodiscard]] ICalculatableUPtr parseSimpleCalculatableObject();
-    [[nodiscard]] ICalculatableUPtr parseBinaryCalculatableObject(int currentPriority);
+    [[nodiscard]] ICalculatableUPtr parseBinaryCalculatableObject(OperationPriority currentPriority);
 
     std::string expression;
     size_t currentParsingPosition;
