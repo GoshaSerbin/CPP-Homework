@@ -83,8 +83,7 @@ ICalculatableUPtr Parser::parseSimpleCalculatableObject() {
         std::string nextToken = parseToken();
 
         if (nextToken != ")") {
-            std::string errorMessage {"Expected ')' at position " + std::to_string(m_currentParsingPosition)};
-            throw Error(errorMessage);
+            throw Error("Expected ')' at position " + std::to_string(m_currentParsingPosition));
         }
 
         return calculatableObjectUPtr;
@@ -103,8 +102,7 @@ ICalculatableUPtr Parser::parseSimpleCalculatableObject() {
         return calculatableObjectUPtr;
     }
 
-    std::string errorMessage {"Missing argument at position " + std::to_string(m_currentParsingPosition - 1)};
-    throw Error(errorMessage);
+    throw Error("Missing argument at position " + std::to_string(m_currentParsingPosition - 1));
 }
 
 OperationPriority Parser::getPriority(const std::string& operation) noexcept {
